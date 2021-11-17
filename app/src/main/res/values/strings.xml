@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">KotlinTesting</string>
+    <string name="no_data_available">No Data Found</string>
+    <string name="fact_detail">Fact Details</string>
+</resources>
