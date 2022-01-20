@@ -1,14 +1,15 @@
 package com.example.kotlintesting.global
 
-import com.example.kotlintesting.api.WebserviceApi
+import android.content.Context
+import com.example.kotlintesting.api.Webservice
 import com.example.kotlintesting.facts.repository.FactsRepository
 
 object RepositoryFactory {
 
-    fun createFactsRepository() : FactsRepository {
+    fun createFactsRepository(context: Context) : FactsRepository {
 
-        val factsApi = WebserviceUtil.instance.retrofit.create(WebserviceApi::class.java)
-        return FactsRepository(factsApi)
+        val factsApi = WebserviceUtil.instance.retrofit.create(Webservice::class.java)
+        return FactsRepository(context, factsApi)
     }
 
 }

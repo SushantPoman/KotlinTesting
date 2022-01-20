@@ -1,13 +1,14 @@
 package com.example.kotlintesting.facts.repository
 
-import com.example.kotlintesting.api.WebserviceApi
+import android.content.Context
+import com.example.kotlintesting.api.Webservice
 import com.example.kotlintesting.facts.model.FactsModel
 import com.example.kotlintesting.global.Resource
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class FactsRepository(private val webserviceApi: WebserviceApi) {
+class FactsRepository(val context: Context, private val webservice: Webservice) {
 
     /*suspend fun getData(): Resource<FactsModel> {
         return withContext(Dispatchers.IO){
@@ -22,22 +23,9 @@ class FactsRepository(private val webserviceApi: WebserviceApi) {
         }
     }*/
 
-    fun fetchFacts() : Observable<Resource<FactsModel>> {
-        return Observable.create { emitter ->
-
-            webserviceApi.getFacts()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( {
-                    if (it.body() != null) {
-//                        val cityModel = Gson().fromJson(it.body()!!, CityModel::class.java)
-                        emitter.onNext(Resource.Success(it.body()!!))
-                    }
-                }, {
-                    it.printStackTrace()
-                    Resource.Failure(it.printStackTrace().toString())
-                })
-        }
+    fun getFactsData(): Observable<FactsModel> {
+        return webservice.fetchFacts()
     }
+
 
 }

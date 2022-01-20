@@ -16,28 +16,29 @@ class WebserviceUtil private constructor() {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-        val builder = Retrofit.Builder()
+        retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
+            .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
 
-        retrofit = builder.client(httpClient).build()
     }
 
     companion object {
-        private var self: WebserviceUtil? = null
+        private var webServiceUtil: WebserviceUtil? = null
 
         val instance: WebserviceUtil
             get() {
-                if (self == null) {
+                if (webServiceUtil == null) {
                     synchronized(WebserviceUtil::class.java) {
-                        if (self == null) {
-                            self =
+                        if (webServiceUtil == null) {
+                            webServiceUtil =
                                     WebserviceUtil()
                         }
                     }
                 }
-                return self!!
+                return webServiceUtil!!
             }
     }
 

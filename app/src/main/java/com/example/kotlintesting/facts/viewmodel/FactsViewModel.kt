@@ -1,41 +1,51 @@
 package com.example.kotlintesting.facts.viewmodel
 
-import android.annotation.SuppressLint
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlintesting.facts.model.FactsModel
 import com.example.kotlintesting.facts.repository.FactsRepository
-import com.example.kotlintesting.global.Resource
+import com.example.kotlintesting.global.SingleLiveEvent
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 class FactsViewModel(private val repository: FactsRepository) : ViewModel() {
 
 
-    private val _factsModel: MutableLiveData<Resource<FactsModel>> = MutableLiveData()
-    val factsModel: LiveData<Resource<FactsModel>>
-        get() = _factsModel
+    var factsModel = MutableLiveData<FactsModel>()
+    var progressDialog: SingleLiveEvent<Boolean>? = SingleLiveEvent()
 
 
-    @SuppressLint("CheckResult")
-    fun fetchFacts() {
+    fun getFactsData() {
 
-        repository.fetchFacts()
-            .subscribe {
-                _factsModel.postValue(it)
-            }
-
+        repository.getFactsData()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(getDataListObserverRx())
     }
 
+    private fun getDataListObserverRx(): Observer<FactsModel> {
+        return object : Observer<FactsModel> {
+            override fun onComplete(){
+                progressDialog?.value = false
+            }
 
-    /*private val _cityModel: MutableLiveData<FactsModel> = MutableLiveData()
-    val cityModel: LiveData<FactsModel>
-        get() = _cityModel
+            override fun onSubscribe(d: Disposable) {
+                progressDialog?.value = true
+            }
 
-    fun fehData() {
-        viewModelScope.launch {
-            _cityModel.value = repository.getData()
+            override fun onNext(t: FactsModel) {
+                factsModel.value = t
+            }
+
+            override fun onError(e: Throwable) {
+                factsModel.value = null
+                progressDialog?.value = false
+            }
         }
-    }*/
+
+    }
 
 
 }

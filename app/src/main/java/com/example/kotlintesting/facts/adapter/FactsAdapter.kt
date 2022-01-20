@@ -1,4 +1,4 @@
-package com.example.kotlintesting.facts
+package com.example.kotlintesting.facts.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,24 +12,20 @@ import com.example.kotlintesting.facts.model.FactsRowModel
 import com.example.kotlintesting.global.Logs
 
 
-class FactsAdapter(val context: Context, private val list: List<FactsRowModel>) : RecyclerView.Adapter<FactsAdapter.RvHolder>() {
+class FactsAdapter(val context: Context, private val list: List<FactsRowModel>) : RecyclerView.Adapter<FactsAdapter.FactsViewHolder>() {
 
+    inner class FactsViewHolder(val rowCityBinding: RowFactsBinding) :RecyclerView.ViewHolder(rowCityBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        RvHolder(
+        FactsViewHolder(
             DataBindingUtil.inflate(LayoutInflater.from(parent.context),
             R.layout.row_facts,
             parent,
         false))
 
 
-    override fun onBindViewHolder(holder: RvHolder, position: Int) {
+    override fun onBindViewHolder(holder: FactsViewHolder, position: Int) {
         holder.rowCityBinding.fact = list[position]
-        /*Glide.with(holder.rowCityBinding.ivImg)
-            .load(list[position].imageHref)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .error(R.drawable.ic_launcher_background)
-            .into(holder.rowCityBinding.ivImg)*/
         holder.itemView.setOnClickListener {
             Toast.makeText(context, "${list[position].title}",Toast.LENGTH_LONG).show()
             Logs.i("Click", list[position].apply { "$title $imageHref" }.toString())
@@ -38,6 +34,5 @@ class FactsAdapter(val context: Context, private val list: List<FactsRowModel>) 
 
     override fun getItemCount(): Int = list.size
 
-    inner class RvHolder(val rowCityBinding: RowFactsBinding) :RecyclerView.ViewHolder(rowCityBinding.root)
 
 }
