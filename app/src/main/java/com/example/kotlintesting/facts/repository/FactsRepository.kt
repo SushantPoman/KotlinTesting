@@ -8,7 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class FactsRepository(val context: Context, private val webservice: Webservice) {
+class FactsRepository(val context: Context?, private val webservice: Webservice) {
 
     /*suspend fun getData(): Resource<FactsModel> {
         return withContext(Dispatchers.IO){

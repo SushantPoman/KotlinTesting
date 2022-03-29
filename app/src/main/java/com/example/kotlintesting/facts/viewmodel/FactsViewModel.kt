@@ -47,5 +47,4 @@ class FactsViewModel(private val repository: FactsRepository) : ViewModel() {
 
     }
 
-
 }
